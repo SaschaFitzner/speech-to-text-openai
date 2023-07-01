@@ -1,0 +1,46 @@
+const express = require('express');
+const multer = require('multer');
+const fsPromises = require('fs').promises;  // Für Promise-basierte Funktionen
+const fs = require('fs');  // Für andere Funktionen
+const { Configuration, OpenAIApi } = require("openai");
+
+// Lese den API-Schlüssel aus der credentials.json-Datei
+const credentials = JSON.parse(fs.readFileSync('credentials.json'));
+const apiKey = credentials.openAIapiKey;
+
+const configuration = new Configuration({
+    apiKey: apiKey,
+});
+const openai = new OpenAIApi(configuration);
+
+const app = express();
+
+// Serve static files from the "public" directory
+app.use(express.static('public'));
+
+const storage = multer.memoryStorage()
+const upload = multer({ storage: storage });
+
+async function transcribeAudio(filename) {
+    const transcript = await openai.createTranscription(
+        fs.createReadStream(filename),
+        "whisper-1"
+    );
+    return transcript.data.text;
+}
+
+app.post('/transcribe', upload.single('audio'), async (req, res) => {
+    const audioFilename = 'files/audio.wav';
+    fsPromises.writeFile(audioFilename, req.file.buffer)
+    .then(async () => {
+        const transcription = await transcribeAudio(audioFilename);
+        console.log('Transcription:', transcription);
+    })
+    .catch(err => {
+        console.error('Error writing file:', err);
+    });
+});
+
+app.listen(3000, () => {
+    console.log('Server running on http://localhost:3000');
+});

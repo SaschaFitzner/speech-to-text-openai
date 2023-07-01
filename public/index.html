@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Audio Recorder</title>
+</head>
+<body>
+    <button id="start">Start</button>
+    <button id="stop">Stop</button>
+
+    <script>
+        const startButton = document.getElementById('start');
+        const stopButton = document.getElementById('stop');
+        let mediaRecorder;
+        let audioChunks = [];
+
+        startButton.addEventListener('click', function() {
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then(stream => {
+                    mediaRecorder = new MediaRecorder(stream);
+                    mediaRecorder.start();
+
+                    mediaRecorder.addEventListener('dataavailable', function(event) {
+                        audioChunks.push(event.data);
+                    });
+
+                    mediaRecorder.addEventListener('stop', function() {
+                        const audioBlob = new Blob(audioChunks, { 'type' : 'audio/wav; codecs=0' });
+                        sendAudioToServer(audioBlob);
+                    });
+                })
+                .catch(err => console.error('getUserMedia failed:', err));
+        });
+
+        stopButton.addEventListener('click', function() {
+            if (mediaRecorder) {
+                mediaRecorder.stop();
+                mediaRecorder.stream.getTracks().forEach(track => track.stop());
+                audioChunks = [];
+            }
+        });
+
+        function sendAudioToServer(blob) {
+            let fd = new FormData();
+            fd.append('audio', blob);
+            fetch('http://localhost:3000/transcribe', {
+                method: 'POST',
+                body: fd
+            })
+            .then(response => response.text())
+            .then(data => console.log('Transcription:', data))
+            .catch(err => console.error('Error:', err));
+        }
+    </script>
+</body>
+</html>
