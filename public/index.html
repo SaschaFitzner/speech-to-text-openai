@@ -13,7 +13,7 @@
         </div>
         <button id="copy">Copy Text</button>
     </div>
-    <textarea id="transcription" readonly></textarea>
+    <textarea id="transcription"></textarea>
 
     <script>
         const recordButton = document.getElementById('record');
@@ -31,6 +31,7 @@
                 mediaRecorder.stream.getTracks().forEach(track => track.stop());
                 audioChunks = [];
                 recordButton.innerText = 'Start';
+                recordButton.classList.remove('recording');
                 isRecording = false;
             } else {
                 navigator.mediaDevices.getUserMedia({ audio: true })
@@ -38,7 +39,8 @@
                         mediaRecorder = new MediaRecorder(stream);
                         mediaRecorder.start();
                         isRecording = true;
-                        recordButton.innerText = 'Stop';
+                        recordButton.innerText = '\uD83D\uDD0A Stop'; // Unicode-Mikrofonsymbol und Text "Stop"
+                        recordButton.classList.add('recording');
 
                         mediaRecorder.addEventListener('dataavailable', function(event) {
                             audioChunks.push(event.data);
