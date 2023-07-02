@@ -2,6 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const fsPromises = require('fs').promises;  // Für Promise-basierte Funktionen
 const fs = require('fs');  // Für andere Funktionen
+const { exec } = require('child_process'); // Für den Aufruf von Kommandozeilenbefehlen
 const { Configuration, OpenAIApi } = require("openai");
 
 // Lese den API-Schlüssel aus der credentials.json-Datei
@@ -44,4 +45,5 @@ app.post('/transcribe', upload.single('audio'), async (req, res) => {
 
 app.listen(3000, () => {
     console.log('Server running on http://localhost:3000');
+    exec('start "" /b http://localhost:3000');
 });

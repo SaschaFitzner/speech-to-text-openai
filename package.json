@@ -1,6 +1,6 @@
 {
-  "name": "talk-to-chatgpt",
-  "version": "0.0.1",
+  "name": "text-to-speech-openai",
+  "version": "0.0.2",
   "scripts": {
     "start": "node server.js",
     "build": "pkg -o dist/text-to-speech --targets node18-win-x64 server.js"
