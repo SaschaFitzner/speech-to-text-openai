@@ -61,13 +61,14 @@
         });
 
         cancelButton.addEventListener('click', function() {
-            if (mediaRecorder) {
+            if (mediaRecorder && isRecording) {
+                isCancelled = true;
                 mediaRecorder.stop();
                 mediaRecorder.stream.getTracks().forEach(track => track.stop());
                 audioChunks = [];
                 recordButton.innerText = 'Start';
+                recordButton.classList.remove('recording');
                 isRecording = false;
-                isCancelled = true;
             }
         });
 
@@ -86,6 +87,9 @@
             .then(response => response.text())
             .then(data => {
                 transcriptionTextArea.value = data;
+                navigator.clipboard.writeText(data)
+                .then(() => console.log('Transkription wurde in die Zwischenablage kopiert.'))
+                .catch(err => console.error('Fehler beim Kopieren in die Zwischenablage:', err));
             })
             .catch(err => console.error('Error:', err));
         }
