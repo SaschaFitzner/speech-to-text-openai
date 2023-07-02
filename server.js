@@ -5,8 +5,8 @@ const fs = require('fs');  // Für andere Funktionen
 const { Configuration, OpenAIApi } = require("openai");
 
 // Lese den API-Schlüssel aus der credentials.json-Datei
-const credentials = JSON.parse(fs.readFileSync('credentials.json'));
-const apiKey = credentials.openAIapiKey;
+require('dotenv').config();
+const apiKey = process.env.OPENAI_KEY;
 
 const configuration = new Configuration({
     apiKey: apiKey,
