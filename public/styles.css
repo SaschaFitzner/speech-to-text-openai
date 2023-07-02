@@ -49,3 +49,43 @@ button.recording {
     outline: none;
     box-shadow: 0 0 5px rgba(0,123,255,.5);
 }
+
+#message {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #f1f1f1;
+    color: #333;
+    padding: 30px;
+    font-size: 14px;
+    font-weight: bold;
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: 9999;
+    text-align: center;
+}
+
+#message.show {
+    opacity: 1;
+}
+
+#message.success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+#message.warning {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+#message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+@keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}

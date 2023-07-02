@@ -14,12 +14,16 @@
         <button id="copy">Copy Text</button>
     </div>
     <textarea id="transcription"></textarea>
+    <div id="message"></div>
+    <div id="loader"></div>
 
     <script>
         const recordButton = document.getElementById('record');
         const cancelButton = document.getElementById('cancel');
         const transcriptionTextArea = document.getElementById('transcription');
         const copyButton = document.getElementById('copy');
+        const messageBox = document.getElementById('message');
+        const loader = document.getElementById('loader');
         let mediaRecorder;
         let audioChunks = [];
         let isRecording = false;
@@ -39,7 +43,7 @@
                         mediaRecorder = new MediaRecorder(stream);
                         mediaRecorder.start();
                         isRecording = true;
-                        recordButton.innerText = '\uD83D\uDD0A Stop'; // Unicode-Mikrofonsymbol und Text "Stop"
+                        recordButton.innerText = '\uD83D\uDD0A Stop'; // Microphone emoji and "Stop" text
                         recordButton.classList.add('recording');
 
                         mediaRecorder.addEventListener('dataavailable', function(event) {
@@ -52,11 +56,20 @@
                                 isCancelled = false;
                             } else {
                                 const audioBlob = new Blob(audioChunks, { 'type' : 'audio/wav; codecs=0' });
+                                if (audioBlob.size === 0) {
+                                    showAlert('The recorded audio file is empty.', 'error');
+                                    console.log('The recorded audio file is empty.');
+                                    return;
+                                }
+                                showLoader();
                                 sendAudioToServer(audioBlob);
                             }
                         });
                     })
-                    .catch(err => console.error('getUserMedia failed:', err));
+                    .catch(err => {
+                        console.error('getUserMedia failed:', err);
+                        showAlert('Error accessing the microphone: ' + err.message, 'error');
+                    });
             }
         });
 
@@ -75,6 +88,7 @@
         copyButton.addEventListener('click', function() {
             transcriptionTextArea.select();
             document.execCommand('copy');
+            showAlert('The transcription has been copied to the clipboard.', 'success');
         });
 
         function sendAudioToServer(blob) {
@@ -86,12 +100,54 @@
             })
             .then(response => response.text())
             .then(data => {
-                transcriptionTextArea.value = data;
-                navigator.clipboard.writeText(data)
-                .then(() => console.log('Transcription has been copied to the clipboard.'))
-                .catch(err => console.error('Error copying to clipboard:', err));
+                hideLoader();
+                if (data.trim() === '') {
+                    showAlert('Transcription is empty.', 'warning');
+                    console.log('Transcription is empty.');
+                } else {
+                    transcriptionTextArea.value = data;
+                    navigator.clipboard.writeText(data)
+                        .then(() => {
+                            console.log('Transcription has been copied to the clipboard.');
+                            showAlert('The transcription has been copied to the clipboard.', 'success');
+                        })
+                        .catch(err => {
+                            console.error('Error copying to clipboard:', err);
+                            showAlert('Error copying to clipboard: ' + err.message, 'error');
+                        });
+                }
             })
-            .catch(err => console.error('Error:', err));
+            .catch(err => {
+                console.error('Error:', err);
+                hideLoader();
+                showAlert('Error sending the audio file: ' + err.message, 'error');
+            });
+        }
+
+        function showLoader() {
+            loader.style.display = 'block';
+        }
+
+        function hideLoader() {
+            loader.style.display = 'none';
+        }
+
+        function showAlert(message, type) {
+            if (type === 'error') {
+                alert(message);
+            } else {
+                messageBox.textContent = message;
+                messageBox.classList.add(type);
+                messageBox.style.opacity = '1';
+
+                setTimeout(() => {
+                    messageBox.style.opacity = '0';
+                    setTimeout(() => {
+                        messageBox.textContent = '';
+                        messageBox.classList.remove(type);
+                    }, 300);
+                }, 3000);
+            }
         }
     </script>
 </body>

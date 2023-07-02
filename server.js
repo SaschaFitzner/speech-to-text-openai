@@ -23,12 +23,20 @@ const storage = multer.memoryStorage()
 const upload = multer({ storage: storage });
 
 async function transcribeAudio(filename) {
-    const transcript = await openai.createTranscription(
-        fs.createReadStream(filename),
-        "whisper-1"
-    );
-    return transcript.data.text;
+    try {
+        const transcript = await openai.createTranscription(
+            fs.createReadStream(filename),
+            "whisper-1"
+        );
+        return transcript.data.text;
+    } catch (error) {
+        console.error(`Error while transcribing audio file: ${error.message}`);
+        // At this point, you can decide what should happen when an error occurs.
+        // For example, you could rethrow the error to be handled by the calling function, or return null.
+        throw error; // Or: return null;
+    }
 }
+
 
 app.post('/transcribe', upload.single('audio'), async (req, res) => {
     const audioFilename = 'files/audio.wav';
