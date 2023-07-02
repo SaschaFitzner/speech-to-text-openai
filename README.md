@@ -19,7 +19,7 @@ To start the application, use the following command:
 
 `npm start`
 
-This will start the application on localhost:3000, and you can begin recording audio. The transcribed result will be automatically copied to the clipboard.
+This will start the application on [localhost:3000](http://localhost:3000), and you can begin recording audio. The transcribed result will be automatically copied to the clipboard.
 
 Additionally, you can use the command `npm run build` to trigger a build of the application using pkg. The built image will be saved in the dist folder.
 
