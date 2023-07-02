@@ -88,8 +88,8 @@
             .then(data => {
                 transcriptionTextArea.value = data;
                 navigator.clipboard.writeText(data)
-                .then(() => console.log('Transkription wurde in die Zwischenablage kopiert.'))
-                .catch(err => console.error('Fehler beim Kopieren in die Zwischenablage:', err));
+                .then(() => console.log('Transcription has been copied to the clipboard.'))
+                .catch(err => console.error('Error copying to clipboard:', err));
             })
             .catch(err => console.error('Error:', err));
         }
