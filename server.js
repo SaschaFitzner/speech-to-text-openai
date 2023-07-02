@@ -1,8 +1,8 @@
 const express = require("express");
 const multer = require("multer");
-const fsPromises = require("fs").promises; // Für Promise-basierte Funktionen
-const fs = require("fs"); // Für andere Funktionen
-const { exec } = require("child_process"); // Für den Aufruf von Kommandozeilenbefehlen
+const fsPromises = require("fs").promises; // For async file operations
+const fs = require("fs");
+const { exec } = require("child_process");
 const { Configuration, OpenAIApi } = require("openai");
 
 // Lese den API-Schlüssel aus der credentials.json-Datei
@@ -43,7 +43,7 @@ app.post("/transcribe", upload.single("audio"), async (req, res) => {
     .writeFile(audioFilename, req.file.buffer)
     .then(async () => {
       const transcription = await transcribeAudio(audioFilename);
-      res.send(transcription); // Sendet die Transkription zurück an den Client.
+      res.send(transcription); // Send the transcription back to the client
     })
     .catch((err) => {
       console.error("Error writing file:", err);

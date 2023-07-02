@@ -46,8 +46,8 @@ button {
 
 button.recording {
   animation: pulsate 1s infinite;
-  background-color: #FF8080; /* Farbe des Buttons */
-  color: white; /* Textfarbe des Buttons */
+  background-color: #FF8080; /* Button color */
+  color: white; /* Textcolor from button */
 }
 
 #transcription {
