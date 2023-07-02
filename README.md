@@ -9,7 +9,7 @@ The transcribed result will be automatically copied to the clipboard.
 To set up the project locally, follow these steps:
 
 - Clone the repository: `git clone https://github.com/...`
-- Navigate to the project directory: `cd text-to-speech-openai`
+- Navigate to the project directory: `cd speech-to-text-openai`
 - Rename the env.template file to .env.
 - Open the .env file and provide your OpenAI API key: `OPENAI_KEY=your-api-key`
 - Install the dependencies: `npm install`

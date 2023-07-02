@@ -1,9 +1,9 @@
 {
-  "name": "text-to-speech-openai",
+  "name": "speech-to-text-openai",
   "version": "0.0.2",
   "scripts": {
     "start": "node server.js",
-    "build": "pkg -o dist/text-to-speech --targets node18-win-x64 server.js"
+    "build": "pkg -o dist/speech-to-text --targets node18-win-x64 server.js"
   },
   "author": "Sascha Fitzner - fitznerIO",
   "license": "MIT",
