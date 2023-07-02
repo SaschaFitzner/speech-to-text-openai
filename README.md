@@ -2,8 +2,7 @@
 
 **Author Sascha Fitzner - fitznerIO**
 
-Welcome to audio recoder / transcriber! This application allows you to record audio and transcribe it using OpenAI Text. 
-The transcribed result will be automatically copied to the clipboard.
+Welcome to the Audio Recorder / Transcriber! This application allows you to record audio and transcribe it using OpenAI Wisper. Additionally, it provides a feature that can translate the transcribed text directly into English. The result, whether transcribed or translated, is then automatically copied to your clipboard for ease of use.
 
 ## Installation
 To set up the project locally, follow these steps:
