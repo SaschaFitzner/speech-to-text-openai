@@ -13,6 +13,10 @@
       </div>
       <button id="copy">Copy Text</button>
     </div>
+    <div id="translate">
+      <label for="translateCheckbox">Translate to English</label>
+      <input type="checkbox" id="translateCheckbox" />
+    </div>
     <textarea id="transcription"></textarea>
     <div id="message"></div>
     <div id="loader"></div>
@@ -22,6 +26,7 @@
       const cancelButton = document.getElementById("cancel");
       const transcriptionTextArea = document.getElementById("transcription");
       const copyButton = document.getElementById("copy");
+      const translateCheckbox = document.getElementById("translate");
       const messageBox = document.getElementById("message");
       const loader = document.getElementById("loader");
       let mediaRecorder;
@@ -103,6 +108,11 @@
       function sendAudioToServer(blob) {
         let fd = new FormData();
         fd.append("audio", blob);
+        fd.append(
+          "translate",
+          document.getElementById("translateCheckbox").checked
+        );
+
         fetch("http://localhost:3000/transcribe", {
           method: "POST",
           body: fd,

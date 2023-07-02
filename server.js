@@ -31,19 +31,45 @@ async function transcribeAudio(filename) {
     return transcript.data.text;
   } catch (error) {
     console.error(`Error while transcribing audio file: ${error.message}`);
-    // At this point, you can decide what should happen when an error occurs.
-    // For example, you could rethrow the error to be handled by the calling function, or return null.
-    throw error; // Or: return null;
+    throw error;
+  }
+}
+
+async function translateAudio(filename) {
+  try {
+    const transcript = await openai.createTranslation(
+      fs.createReadStream(filename),
+      "whisper-1"
+    );
+    return transcript.data.text;
+  } catch (error) {
+    console.error(`Error while transcribing audio file: ${error.message}`);
+    throw error;
   }
 }
 
 app.post("/transcribe", upload.single("audio"), async (req, res) => {
   const audioFilename = "files/audio.wav";
+
   fsPromises
     .writeFile(audioFilename, req.file.buffer)
     .then(async () => {
-      const transcription = await transcribeAudio(audioFilename);
-      res.send(transcription); // Send the transcription back to the client
+      let responseText;
+      const translate = req.body.translate;
+
+      if (translate === "true") {
+        try {
+          responseText = await translateAudio(audioFilename);
+        } catch (error) {
+          console.error("Error translating text:", error);
+          // In case of translation error, you can choose to use the original transcription or return an error message
+          responseText = "Translation failed";
+        }
+      } else {
+        responseText = await transcribeAudio(audioFilename);
+      }
+
+      res.send(responseText); // Send the response text back to the client
     })
     .catch((err) => {
       console.error("Error writing file:", err);

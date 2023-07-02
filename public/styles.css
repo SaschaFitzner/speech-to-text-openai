@@ -13,12 +13,16 @@ h1 {
   margin-bottom: 20px;
 }
 
-#controls {
+#controls, #translate {
   display: flex;
   justify-content: space-between;
   width: 100%;
   max-width: 600px;
   margin-bottom: 20px;
+}
+
+#translate {
+  justify-content: flex-end;
 }
 
 button {
