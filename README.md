@@ -23,6 +23,13 @@ This will start the application on [localhost:3000](http://localhost:3000), and 
 
 Additionally, you can use the command `npm run build` to trigger a build of the application using pkg. The built image will be saved in the dist folder.
 
+### Usage Note
+Please note that using this application requires recording your voice. Before you can start recording, you need to grant permission for the browser to access your microphone.
+
+Additionally, the transcribed text will be automatically copied to the clipboard. You can then use the copied text in other applications or programs.
+
+Make sure you are using an up-to-date version of your browser on your device and have installed the latest updates to ensure optimal functionality.
+
 ## Contributing
 If you would like to contribute to the development of this project, feel free to create a pull request or open an issue. Your contributions are welcome!
 
