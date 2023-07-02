@@ -1,5 +1,4 @@
 node_modules
 files
-credentials.json
 .env
 dist
