@@ -34,10 +34,11 @@ app.post('/transcribe', upload.single('audio'), async (req, res) => {
     fsPromises.writeFile(audioFilename, req.file.buffer)
     .then(async () => {
         const transcription = await transcribeAudio(audioFilename);
-        console.log('Transcription:', transcription);
+        res.send(transcription);  // Sendet die Transkription zurück an den Client.
     })
     .catch(err => {
         console.error('Error writing file:', err);
+        res.status(500).send('Server error');
     });
 });
 
