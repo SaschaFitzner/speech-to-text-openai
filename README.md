@@ -9,6 +9,7 @@ To set up the project locally, follow these steps:
 
 - Clone the repository: `git clone https://github.com/SaschaFitzner/speech-to-text-openai`
 - Navigate to the project directory: `cd speech-to-text-openai`
+- Create files-folder: `mkdir files`
 - Rename the env.template file to .env.
 - Open the .env file and provide your OpenAI API key: `OPENAI_KEY=your-api-key`
 - Install the dependencies: `npm install`
