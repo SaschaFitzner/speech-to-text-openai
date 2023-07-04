@@ -177,6 +177,22 @@
           }, 3000);
         }
       }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        fetch("http://localhost:3000/checkEnv").then((response) => {
+          if (!response.ok) {
+            // If the .env file is missing, prompt the user to enter the OpenAI API key
+            const key = prompt("Please enter your OpenAI-API-Key:");
+            fetch("http://localhost:3000/setOpenAIKey", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ key: key }),
+            });
+          }
+        });
+      });
     </script>
   </body>
 </html>

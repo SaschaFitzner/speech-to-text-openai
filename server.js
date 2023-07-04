@@ -1,20 +1,32 @@
+require('dotenv').config();
+
 const express = require("express");
 const multer = require("multer");
 const fsPromises = require("fs").promises; // For async file operations
 const fs = require("fs");
 const { exec } = require("child_process");
 const { Configuration, OpenAIApi } = require("openai");
+const bodyParser = require('body-parser');
 
-// Lese den API-Schlüssel aus der credentials.json-Datei
-require("dotenv").config();
-const apiKey = process.env.OPENAI_KEY;
+// Read OpenAI key from .env file
+let apiKey = process.env.OPENAI_KEY; 
 
-const configuration = new Configuration({
-  apiKey: apiKey,
-});
-const openai = new OpenAIApi(configuration);
+let openai;
+
+function updateOpenAIConfiguration(key) {
+  const configuration = new Configuration({
+    apiKey: key,
+  });
+  openai = new OpenAIApi(configuration);
+}
+
+// Initialize OpenAI API
+updateOpenAIConfiguration(apiKey);
 
 const app = express();
+
+// Parse JSON request body
+app.use(bodyParser.json());
 
 // Serve static files from the "public" directory
 app.use(express.static("public"));
@@ -75,6 +87,26 @@ app.post("/transcribe", upload.single("audio"), async (req, res) => {
       console.error("Error writing file:", err);
       res.status(500).send("Server error");
     });
+});
+
+app.get("/checkEnv", async (req, res) => {
+  try {
+      await fsPromises.access('.env');
+      res.sendStatus(200); // File exist, send status code 200
+  } catch (error) {
+      res.sendStatus(404); // File not found, send status code 404
+  }
+});
+
+app.post("/setOpenAIKey", async (req, res) => {
+  apiKey = req.body.key; // Store the key in a variable
+  updateOpenAIConfiguration(apiKey);
+  try {
+      await fsPromises.writeFile('.env', `OPENAI_KEY=${apiKey}`);
+      res.sendStatus(200); // Success, send status code 200
+  } catch (error) {
+      res.sendStatus(500); // Error, send status code 500
+  }
 });
 
 app.listen(3000, () => {
