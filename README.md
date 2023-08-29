@@ -12,6 +12,8 @@ To set up the project locally, follow these steps:
 - Create files-folder: `mkdir files`
 - Rename the env.template file to .env.
 - Open the .env file and provide your OpenAI API key: `OPENAI_KEY=your-api-key`
+- Insert your Credentials for Login in the .env file: `BASIC_AUTH_USERNAME=your-username` and `BASIC_AUTH_PASSWORD=your-password`
+- Insert a value for DEPLOY_ENV in the .env file: `DEPLOY_ENV=production`, `DEPLOY_ENV=local` or empty means local in this case 
 - Install the dependencies: `npm install`
 
 ## Usage

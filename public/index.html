@@ -44,7 +44,7 @@
     const TEXT_TRANSCRIPTION_EMPTY = 'Transcription is empty.';
     const TEXT_ERROR_COPYING = 'Error copying to clipboard:';
     const TEXT_ERROR_SENDING = 'Error sending the audio file:';
-    const TEXT_ENTER_APIKEY = 'Please enter your OpenAI-API-Key:';
+    const TEXT_NO_ENV_FILE = 'No .env-File found';
 
     recordButton.addEventListener("click", function () {
       if (isRecording) {
@@ -195,21 +195,7 @@
       fetch("http://localhost:3000/checkEnv").then((response) => {
         if (!response.ok) {
           // If the .env file is missing, prompt the user to enter the OpenAI API key
-          const key = prompt(TEXT_ENTER_APIKEY);
-          if (key !== '') {
-            fetch("http://localhost:3000/setOpenAIKey", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ key: key }),
-            });
-          } else {
-            // Reload the page after 1 second, when the user has not entered an API key
-            setTimeout(() => {
-              location.reload();
-            }, 1000);
-          }
+          const key = showAlert(TEXT_NO_ENV_FILE);
         }
       });
     });

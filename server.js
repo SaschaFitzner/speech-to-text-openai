@@ -7,9 +7,15 @@ const fs = require("fs");
 const { exec } = require("child_process");
 const { Configuration, OpenAIApi } = require("openai");
 const bodyParser = require('body-parser');
+const basicAuth = require('express-basic-auth');
 
-// Read OpenAI key from .env file
-let apiKey = process.env.OPENAI_KEY; 
+const uuidv4 = require('uuid').v4; // Import UUID library to generate unique IDs
+
+// Read data from .env file
+let apiKey = process.env.OPENAI_KEY;
+const deploy_env = process.env.DEPLOY_ENV || 'local';
+const username = process.env.BASIC_AUTH_USERNAME;
+const password = process.env.BASIC_AUTH_PASSWORD;
 
 let openai;
 
@@ -24,6 +30,16 @@ function updateOpenAIConfiguration(key) {
 updateOpenAIConfiguration(apiKey);
 
 const app = express();
+
+// Basic Authentication
+if (deploy_env !== 'local') {
+  app.use(basicAuth({
+      users: { [username]: password },
+      challenge: true,
+      realm: 'Transcriber',
+  }));
+}
+
 
 // Parse JSON request body
 app.use(bodyParser.json());
@@ -61,7 +77,7 @@ async function translateAudio(filename) {
 }
 
 app.post("/transcribe", upload.single("audio"), async (req, res) => {
-  const audioFilename = "files/audio.wav";
+  const audioFilename = `files/${uuidv4()}.wav`;
 
   fsPromises
     .writeFile(audioFilename, req.file.buffer)
@@ -82,6 +98,12 @@ app.post("/transcribe", upload.single("audio"), async (req, res) => {
       }
 
       res.send(responseText); // Send the response text back to the client
+
+    // Delete the audio file after processing
+    fsPromises.unlink(audioFilename).catch((err) => {
+        console.error("Error deleting file:", err);
+    });
+
     })
     .catch((err) => {
       console.error("Error writing file:", err);
@@ -95,17 +117,6 @@ app.get("/checkEnv", async (req, res) => {
       res.sendStatus(200); // File exist, send status code 200
   } catch (error) {
       res.sendStatus(404); // File not found, send status code 404
-  }
-});
-
-app.post("/setOpenAIKey", async (req, res) => {
-  apiKey = req.body.key; // Store the key in a variable
-  updateOpenAIConfiguration(apiKey);
-  try {
-      await fsPromises.writeFile('.env', `OPENAI_KEY=${apiKey}`);
-      res.sendStatus(200); // Success, send status code 200
-  } catch (error) {
-      res.sendStatus(500); // Error, send status code 500
   }
 });
 
